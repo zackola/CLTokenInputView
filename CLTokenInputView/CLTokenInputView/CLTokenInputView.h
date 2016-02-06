@@ -24,7 +24,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class CLTokenInputView;
+@class CLTokenInputView, CLBackspaceDetectingTextField;
 @protocol CLTokenInputViewDelegate <NSObject>
 
 @optional
@@ -68,6 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CLTokenInputView : UIView
 
+@property (nonatomic, readonly) CLBackspaceDetectingTextField *textField;
 @property (weak, nonatomic, nullable) IBOutlet NSObject <CLTokenInputViewDelegate> *delegate;
 /** An optional view that shows up presumably on the first line */
 @property (strong, nonatomic, nullable) UIView *fieldView;

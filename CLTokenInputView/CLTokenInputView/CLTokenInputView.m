@@ -12,22 +12,23 @@
 #import "CLTokenView.h"
 
 static CGFloat const HSPACE = 0.0;
-static CGFloat const TEXT_FIELD_HSPACE = 4.0; // Note: Same as CLTokenView.PADDING_X
+static CGFloat const TEXT_FIELD_HSPACE = 6.0; // Note: Same as CLTokenView.PADDING_X
 static CGFloat const VSPACE = 4.0;
 static CGFloat const MINIMUM_TEXTFIELD_WIDTH = 56.0;
 static CGFloat const PADDING_TOP = 10.0;
 static CGFloat const PADDING_BOTTOM = 10.0;
-static CGFloat const PADDING_LEFT = 8.0;
+static CGFloat const PADDING_LEFT = 0.0;
 static CGFloat const PADDING_RIGHT = 16.0;
-static CGFloat const STANDARD_ROW_HEIGHT = 25.0;
+static CGFloat const STANDARD_ROW_HEIGHT = 30.0;
+static CGFloat const PADDING_BETWEEN_FIELDLABEL_AND_TOKENS = 10.f;
 
-static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_X
+static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_X
 
 @interface CLTokenInputView () <CLBackspaceDetectingTextFieldDelegate, CLTokenViewDelegate>
 
 @property (strong, nonatomic) CL_GENERIC_MUTABLE_ARRAY(CLToken *) *tokens;
 @property (strong, nonatomic) CL_GENERIC_MUTABLE_ARRAY(CLTokenView *) *tokenViews;
-@property (strong, nonatomic) CLBackspaceDetectingTextField *textField;
+@property (strong, nonatomic, readwrite) CLBackspaceDetectingTextField *textField;
 @property (strong, nonatomic) UILabel *fieldLabel;
 
 
@@ -323,8 +324,8 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     if ([self.delegate respondsToSelector:@selector(tokenInputViewDidBeginEditing:)]) {
         [self.delegate tokenInputViewDidBeginEditing:self];
     }
-    self.tokenViews.lastObject.hideUnselectedComma = NO;
-    [self unselectAllTokenViewsAnimated:YES];
+    self.tokenViews.lastObject.hideUnselectedComma = YES;
+    [self selectAllTokenViewsAnimated:YES];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
@@ -445,6 +446,13 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     }
 }
 
+- (void)selectAllTokenViewsAnimated:(BOOL)animated
+{
+    for (CLTokenView *tokenView in self.tokenViews) {
+        [tokenView setSelected:YES animated:animated];
+    }
+}
+
 
 #pragma mark - Editing
 
@@ -457,7 +465,8 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 - (void)beginEditing
 {
     [self.textField becomeFirstResponder];
-    [self unselectAllTokenViewsAnimated:NO];
+//    [self unselectAllTokenViewsAnimated:NO];
+    [self selectAllTokenViewsAnimated:YES];
 }
 
 
