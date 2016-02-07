@@ -325,7 +325,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
         [self.delegate tokenInputViewDidBeginEditing:self];
     }
     self.tokenViews.lastObject.hideUnselectedComma = YES;
-    [self selectAllTokenViewsAnimated:YES];
+//    [self selectAllTokenViewsAnimated:YES];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
@@ -451,6 +451,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     for (CLTokenView *tokenView in self.tokenViews) {
         [tokenView setSelected:YES animated:animated];
     }
+    [self becomeFirstResponder];
 }
 
 
@@ -466,7 +467,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
 {
     [self.textField becomeFirstResponder];
 //    [self unselectAllTokenViewsAnimated:NO];
-    [self selectAllTokenViewsAnimated:YES];
+//    [self selectAllTokenViewsAnimated:YES];
 }
 
 
@@ -480,6 +481,27 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     [self.textField resignFirstResponder];
 }
 
+// Side effects
+- (void)setKvoFirstResponding:(BOOL)kvoFirstResponding
+{
+    if (_kvoFirstResponding != kvoFirstResponding)
+    {
+        _kvoFirstResponding = kvoFirstResponding;
+        if (kvoFirstResponding)
+        {
+            [self.textField becomeFirstResponder];
+        }
+        else
+        {
+            [self.textField resignFirstResponder];
+        }
+    }
+}
+
+- (BOOL)becomeFirstResponder
+{
+    return self.textField.becomeFirstResponder;
+}
 
 #pragma mark - (Optional Views)
 

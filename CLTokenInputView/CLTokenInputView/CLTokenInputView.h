@@ -68,6 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CLTokenInputView : UIView
 
+@property(nonatomic, getter=isKvoFirstResponding) BOOL kvoFirstResponding;
 @property (nonatomic, readonly) CLBackspaceDetectingTextField *textField;
 @property (weak, nonatomic, nullable) IBOutlet NSObject <CLTokenInputViewDelegate> *delegate;
 /** An optional view that shows up presumably on the first line */
