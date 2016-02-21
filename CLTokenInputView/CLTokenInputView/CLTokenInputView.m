@@ -20,7 +20,7 @@ static CGFloat const PADDING_BOTTOM = 10.0;
 static CGFloat const PADDING_LEFT = 0.0;
 static CGFloat const PADDING_RIGHT = 16.0;
 static CGFloat const STANDARD_ROW_HEIGHT = 30.0;
-static CGFloat const PADDING_BETWEEN_FIELDLABEL_AND_TOKENS = 10.f;
+static CGFloat const PADDING_BETWEEN_FIELDLABEL_AND_TOKENS = 5.f;
 
 static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_X
 
@@ -59,8 +59,8 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     self.tokens = [NSMutableArray arrayWithCapacity:20];
     self.tokenViews = [NSMutableArray arrayWithCapacity:20];
 
-    self.fieldColor = [UIColor lightGrayColor]; 
-    
+    self.fieldColor = [UIColor lightGrayColor];
+
     self.fieldLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     self.fieldLabel.font = self.textField.font;
     self.fieldLabel.textColor = self.fieldColor;
@@ -230,6 +230,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     // Position token views
     CGRect tokenRect = CGRectNull;
     for (UIView *tokenView in self.tokenViews) {
+        curX += PADDING_BETWEEN_FIELDLABEL_AND_TOKENS;
         tokenRect = tokenView.frame;
 
         CGFloat tokenBoundary = isOnFirstLine ? firstLineRightBoundary : rightBoundary;
