@@ -234,7 +234,14 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 
 - (void)insertText:(NSString *)text
 {
-    [self.delegate tokenViewDidRequestDelete:self replaceWithText:text];
+    if ([text isEqualToString:@"\n"]) // Return key press
+    {
+        [self.delegate tokenViewDidRequestDeselection:self];
+    }
+    else
+    {
+        [self.delegate tokenViewDidRequestDelete:self replaceWithText:text];
+    }
 }
 
 - (void)deleteBackward
@@ -250,6 +257,11 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 - (UITextAutocorrectionType)autocorrectionType
 {
     return UITextAutocorrectionTypeNo;
+}
+
+- (UIReturnKeyType)returnKeyType
+{
+    return UIReturnKeyDone;
 }
 
 

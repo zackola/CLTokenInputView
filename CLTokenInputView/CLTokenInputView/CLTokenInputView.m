@@ -340,6 +340,10 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self tokenizeTextfieldText];
+    if ([self.delegate respondsToSelector:@selector(tokenInputViewShouldReturn:)])
+    {
+        return [self.delegate tokenInputViewShouldReturn:self];
+    }
     return NO;
 }
 
@@ -427,6 +431,14 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     [self selectTokenView:tokenView animated:YES];
 }
 
+- (void)tokenViewDidRequestDeselection:(CLTokenView *)tokenView
+{
+    [tokenView setSelected:NO animated:NO];
+    if ([self.delegate respondsToSelector:@selector(tokenInputViewShouldReturn:)])
+    {
+        [self.delegate tokenInputViewShouldReturn:self];
+    }
+}
 
 #pragma mark - Token selection
 
