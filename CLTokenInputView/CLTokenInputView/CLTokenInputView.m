@@ -433,7 +433,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
 
 - (void)tokenViewDidRequestDeselection:(CLTokenView *)tokenView
 {
-    [tokenView setSelected:NO animated:NO];
+    [tokenView setSelected:NO animated:YES];
     if ([self.delegate respondsToSelector:@selector(tokenInputViewShouldReturn:)])
     {
         [self.delegate tokenInputViewShouldReturn:self];
