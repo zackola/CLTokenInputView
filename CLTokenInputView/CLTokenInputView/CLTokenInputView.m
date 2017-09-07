@@ -14,11 +14,11 @@
 static CGFloat const HSPACE = 0.0;
 static CGFloat const TEXT_FIELD_HSPACE = 6.0; // Note: Same as CLTokenView.PADDING_X
 static CGFloat const VSPACE = 4.0;
-static CGFloat const MINIMUM_TEXTFIELD_WIDTH = 56.0;
+static CGFloat const MINIMUM_TEXTFIELD_WIDTH = 46.0;
 static CGFloat const PADDING_TOP = 10.0;
 static CGFloat const PADDING_BOTTOM = 10.0;
 static CGFloat const PADDING_LEFT = 0.0;
-static CGFloat const PADDING_RIGHT = 16.0;
+static CGFloat const PADDING_RIGHT = 5.0;
 static CGFloat const STANDARD_ROW_HEIGHT = 30.0;
 static CGFloat const PADDING_BETWEEN_FIELDLABEL_AND_TOKENS = 5.f;
 
