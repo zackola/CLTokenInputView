@@ -14,7 +14,7 @@
 static CGFloat const HSPACE = 0.0;
 static CGFloat const TEXT_FIELD_HSPACE = 6.0; // Note: Same as CLTokenView.PADDING_X
 static CGFloat const VSPACE = 4.0;
-static CGFloat const MINIMUM_TEXTFIELD_WIDTH = 46.0;
+static CGFloat const MINIMUM_TEXTFIELD_WIDTH = 1.0;
 static CGFloat const PADDING_TOP = 10.0;
 static CGFloat const PADDING_BOTTOM = 10.0;
 static CGFloat const PADDING_LEFT = 0.0;
@@ -102,6 +102,16 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
 {
     for (UIView *tokenView in self.tokenViews) {
         tokenView.tintColor = self.tintColor;
+    }
+}
+- (void)setNumberOfLines:(NSInteger)numberOfLines
+{
+    if (_numberOfLines != numberOfLines)
+    {
+        _numberOfLines = numberOfLines;
+        
+        [self updatePlaceholderTextVisibility];
+        [self repositionViews];
     }
 }
 
@@ -195,7 +205,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     CGFloat curX = PADDING_LEFT;
     CGFloat curY = PADDING_TOP;
     CGFloat totalHeight = STANDARD_ROW_HEIGHT;
-    BOOL isOnFirstLine = YES;
+    NSInteger lineNumber = 0;
 
     // Position field view (if set)
     if (self.fieldView) {
@@ -230,18 +240,33 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     }
 
     // Position token views
-    CGRect tokenRect = CGRectNull;
+    CGRect tokenRect;
     for (UIView *tokenView in self.tokenViews) {
+        if (self.numberOfLines > 0 && lineNumber == self.numberOfLines)
+        {
+            tokenView.hidden = YES;
+            continue;
+        }
+        else
+        {
+            tokenView.hidden = NO;
+        }
+        
         curX += PADDING_BETWEEN_FIELDLABEL_AND_TOKENS;
         tokenRect = tokenView.frame;
+        tokenRect.size = tokenView.intrinsicContentSize;
 
-        CGFloat tokenBoundary = isOnFirstLine ? firstLineRightBoundary : rightBoundary;
+        CGFloat tokenBoundary = lineNumber == 0 ? firstLineRightBoundary : rightBoundary;
         if (curX + CGRectGetWidth(tokenRect) > tokenBoundary) {
             // Need a new line
-            curX = PADDING_LEFT;
-            curY += STANDARD_ROW_HEIGHT+VSPACE;
-            totalHeight += STANDARD_ROW_HEIGHT;
-            isOnFirstLine = NO;
+            if (self.numberOfLines == 0 || lineNumber + 1 < self.numberOfLines)
+            {
+                curX = PADDING_LEFT;
+                curY += STANDARD_ROW_HEIGHT+VSPACE;
+                totalHeight += STANDARD_ROW_HEIGHT;
+                lineNumber++;
+            }
+            tokenRect.size.width = tokenBoundary - (curX + tokenRect.size.width + TEXT_FIELD_HSPACE + MINIMUM_TEXTFIELD_WIDTH ) > 0 ? tokenRect.size.width : tokenBoundary - (curX + TEXT_FIELD_HSPACE + MINIMUM_TEXTFIELD_WIDTH);
         }
 
         tokenRect.origin.x = curX;
@@ -254,14 +279,14 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
 
     // Always indent textfield by a little bit
     curX += TEXT_FIELD_HSPACE;
-    CGFloat textBoundary = isOnFirstLine ? firstLineRightBoundary : rightBoundary;
+    CGFloat textBoundary = lineNumber == 0 ? firstLineRightBoundary : rightBoundary;
     CGFloat availableWidthForTextField = textBoundary - curX;
     if (availableWidthForTextField < MINIMUM_TEXTFIELD_WIDTH) {
-        isOnFirstLine = NO;
+        lineNumber++;
         // If in the future we add more UI elements below the tokens,
         // isOnFirstLine will be useful, and this calculation is important.
         // So leaving it set here, and marking the warning to ignore it
-#pragma unused(isOnFirstLine)
+#pragma unused(lineNumber)
         curX = PADDING_LEFT + TEXT_FIELD_HSPACE;
         curY += STANDARD_ROW_HEIGHT+VSPACE;
         totalHeight += STANDARD_ROW_HEIGHT;
@@ -465,6 +490,10 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
         if (otherTokenView != tokenView) {
             [otherTokenView setSelected:NO animated:animated];
         }
+    }
+    if ([self.delegate respondsToSelector:@selector(tokenInputView:didSelectToken:)])
+    {
+        [self.delegate tokenInputView:self didSelectToken:nil];
     }
 }
 

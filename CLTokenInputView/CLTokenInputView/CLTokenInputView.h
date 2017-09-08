@@ -53,6 +53,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)tokenInputView:(CLTokenInputView *)view didAddToken:(CLToken *)token;
 /**
+ * Called when a token has been selected.
+ */
+- (void)tokenInputView:(CLTokenInputView *)view didSelectToken:(CLToken *)token;
+/**
  * Called when a token has been removed. You should use this opportunity to update your local list of selected items.
  */
 - (void)tokenInputView:(CLTokenInputView *)view didRemoveToken:(CLToken *)token;
@@ -75,6 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, getter=isKvoFirstResponding) BOOL kvoFirstResponding;
 @property (nonatomic, readonly) CLBackspaceDetectingTextField *textField;
+@property (nonatomic) NSInteger numberOfLines;
 @property (weak, nonatomic, nullable) IBOutlet NSObject <CLTokenInputViewDelegate> *delegate;
 /** An optional view that shows up presumably on the first line */
 @property (strong, nonatomic, nullable) UIView *fieldView;
