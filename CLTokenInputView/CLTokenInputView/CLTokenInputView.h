@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)tokenInputViewDidBeginEditing:(CLTokenInputView *)view;
 
 /**
- *  Called when the token field has a return key press
+ * Called when the text field should return
  */
 - (BOOL)tokenInputViewShouldReturn:(CLTokenInputView *)view;
 
@@ -87,6 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign, nonatomic) IBInspectable UIKeyboardType keyboardType;
 @property (assign, nonatomic) IBInspectable UITextAutocapitalizationType autocapitalizationType;
 @property (assign, nonatomic) IBInspectable UITextAutocorrectionType autocorrectionType;
+@property (assign, nonatomic) IBInspectable UIKeyboardAppearance keyboardAppearance;
 /** 
  * Optional additional characters to trigger the tokenization process (and call the delegate
  * with `tokenInputView:tokenForText:`
@@ -100,7 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) CL_GENERIC_ARRAY(CLToken *) *allTokens;
 @property (readonly, nonatomic, getter = isEditing) BOOL editing;
 @property (readonly, nonatomic) CGFloat textFieldDisplayOffset;
-@property (readonly, nonatomic, nullable) NSString *text;
+@property (copy, nonatomic, nullable) NSString *text;
 
 - (void)addToken:(CLToken *)token;
 - (void)removeToken:(CLToken *)token;

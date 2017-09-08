@@ -62,7 +62,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     self.fieldColor = [UIColor lightGrayColor];
 
     self.fieldLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    self.fieldLabel.font = self.textField.font;
+    // NOTE: Explicitly not setting a font for the field label
     self.fieldLabel.textColor = self.fieldColor;
     [self addSubview:self.fieldLabel];
     self.fieldLabel.hidden = YES;
@@ -209,7 +209,9 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
 
     // Position field label (if field name is set)
     if (!self.fieldLabel.hidden) {
-        CGRect fieldLabelRect = self.fieldLabel.frame;
+        CGSize labelSize = self.fieldLabel.intrinsicContentSize;
+        CGRect fieldLabelRect = CGRectZero;
+        fieldLabelRect.size = labelSize;
         fieldLabelRect.origin.x = curX + FIELD_MARGIN_X;
         fieldLabelRect.origin.y = curY + ((STANDARD_ROW_HEIGHT-CGRectGetHeight(fieldLabelRect))/2.0);
         self.fieldLabel.frame = fieldLabelRect;
@@ -243,7 +245,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
         }
 
         tokenRect.origin.x = curX;
-        // Center our tokenView vertially within STANDARD_ROW_HEIGHT
+        // Center our tokenView vertically within STANDARD_ROW_HEIGHT
         tokenRect.origin.y = curY + ((STANDARD_ROW_HEIGHT-CGRectGetHeight(tokenRect))/2.0);
         tokenView.frame = tokenRect;
 
@@ -256,6 +258,10 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     CGFloat availableWidthForTextField = textBoundary - curX;
     if (availableWidthForTextField < MINIMUM_TEXTFIELD_WIDTH) {
         isOnFirstLine = NO;
+        // If in the future we add more UI elements below the tokens,
+        // isOnFirstLine will be useful, and this calculation is important.
+        // So leaving it set here, and marking the warning to ignore it
+#pragma unused(isOnFirstLine)
         curX = PADDING_LEFT + TEXT_FIELD_HSPACE;
         curY += STANDARD_ROW_HEIGHT+VSPACE;
         totalHeight += STANDARD_ROW_HEIGHT;
@@ -271,7 +277,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     self.textField.frame = textFieldRect;
 
     CGFloat oldContentHeight = self.intrinsicContentHeight;
-    self.intrinsicContentHeight = CGRectGetMaxY(textFieldRect)+PADDING_BOTTOM;
+    self.intrinsicContentHeight = MAX(totalHeight, CGRectGetMaxY(textFieldRect)+PADDING_BOTTOM);
     [self invalidateIntrinsicContentSize];
 
     if (oldContentHeight != self.intrinsicContentHeight) {
@@ -340,11 +346,11 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self tokenizeTextfieldText];
-    if ([self.delegate respondsToSelector:@selector(tokenInputViewShouldReturn:)])
-    {
-        return [self.delegate tokenInputViewShouldReturn:self];
+    BOOL shouldDoDefaultBehavior = NO;
+    if ([self.delegate respondsToSelector:@selector(tokenInputViewShouldReturn:)]) {
+        shouldDoDefaultBehavior = [self.delegate tokenInputViewShouldReturn:self];
     }
-    return NO;
+    return shouldDoDefaultBehavior;
 }
 
 - (BOOL)                    textField:(UITextField *)textField
@@ -390,6 +396,12 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     self.textField.autocorrectionType = _autocorrectionType;
 }
 
+- (void)setKeyboardAppearance:(UIKeyboardAppearance)keyboardAppearance
+{
+    _keyboardAppearance = keyboardAppearance;
+    self.textField.keyboardAppearance = _keyboardAppearance;
+}
+
 
 #pragma mark - Measurements (text field offset, etc.)
 
@@ -408,6 +420,10 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     return self.textField.text;
 }
 
+
+-(void) setText:(NSString*)text {
+    self.textField.text = text;
+}
 
 #pragma mark - CLTokenViewDelegate
 
@@ -527,7 +543,7 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
     _fieldName = fieldName;
 
     self.fieldLabel.text = _fieldName;
-    [self.fieldLabel sizeToFit];
+    [self.fieldLabel invalidateIntrinsicContentSize];
     BOOL showField = (_fieldName.length > 0);
     self.fieldLabel.hidden = !showField;
     if (showField && !self.fieldLabel.superview) {
