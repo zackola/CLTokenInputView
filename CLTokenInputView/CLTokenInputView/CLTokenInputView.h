@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "CLToken.h"
+#import "CLTokenView.h"
 
 #if __has_feature(objc_generics)
 #define CL_GENERIC_ARRAY(type) NSArray<type>
@@ -77,6 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CLTokenInputView : UIView
 
+@property (strong, nonatomic) CL_GENERIC_MUTABLE_ARRAY(CLTokenView *) *tokenViews;
 @property(nonatomic, getter=isKvoFirstResponding) BOOL kvoFirstResponding;
 @property (nonatomic, readonly) CLBackspaceDetectingTextField *textField;
 @property (nonatomic) NSInteger numberOfLines;

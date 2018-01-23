@@ -27,7 +27,6 @@ static CGFloat const FIELD_MARGIN_X = 0.0; // Note: Same as CLTokenView.PADDING_
 @interface CLTokenInputView () <CLBackspaceDetectingTextFieldDelegate, CLTokenViewDelegate>
 
 @property (strong, nonatomic) CL_GENERIC_MUTABLE_ARRAY(CLToken *) *tokens;
-@property (strong, nonatomic) CL_GENERIC_MUTABLE_ARRAY(CLTokenView *) *tokenViews;
 @property (strong, nonatomic, readwrite) CLBackspaceDetectingTextField *textField;
 @property (strong, nonatomic) UILabel *fieldLabel;
 
