@@ -29,6 +29,15 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 
 @end
 
+@implementation UIColor (CLTokenInputView)
+
++ (instancetype)hexColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue
+{
+    return [UIColor colorWithRed:(red/0xFF) green:green/0xFF blue:blue/0xFF alpha:1.f];
+}
+
+@end
+
 @implementation CLTokenView
 
 - (id)initWithToken:(CLToken *)token font:(nullable UIFont *)font
@@ -39,6 +48,12 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
         if ([self respondsToSelector:@selector(tintColor)]) {
             tintColor = self.tintColor;
         }
+
+        self.layer.cornerRadius = 5.f;
+        self.layer.borderWidth = 0.5f;
+        self.layer.borderColor = [UIColor hexColorWithRed:0xBC green:0xBF blue:0xC1].CGColor;
+        self.backgroundColor = [UIColor whiteColor];
+
         self.label = [[UILabel alloc] initWithFrame:CGRectMake(PADDING_X, PADDING_Y, 0, 0)];
         if (font) {
             self.label.font = font;
