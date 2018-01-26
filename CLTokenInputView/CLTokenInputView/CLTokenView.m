@@ -50,7 +50,7 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
         }
 
         self.layer.cornerRadius = 5.f;
-        self.layer.borderWidth = 0.5f;
+        self.layer.borderWidth = 1.f;
         self.layer.borderColor = [UIColor hexColorWithRed:0xBC green:0xBF blue:0xC1].CGColor;
         self.backgroundColor = [UIColor whiteColor];
 
@@ -163,12 +163,15 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
         [self resignFirstResponder];
     }
     CGFloat selectedAlpha = (_selected ? 1.0 : 0.0);
+    CGColorRef selectedColor = (_selected ? [UIColor clearColor].CGColor : [UIColor hexColorWithRed:0xBC green:0xBF blue:0xC1].CGColor);
+
     if (animated) {
         if (_selected) {
             self.selectedBackgroundView.alpha = 0.0;
             self.selectedBackgroundView.hidden = NO;
             self.selectedLabel.alpha = 0.0;
             self.selectedLabel.hidden = NO;
+            self.layer.borderColor = selectedColor;
         }
         [UIView animateWithDuration:0.25 animations:^{
             self.selectedBackgroundView.alpha = selectedAlpha;
@@ -182,6 +185,7 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
     } else {
         self.selectedBackgroundView.hidden = !_selected;
         self.selectedLabel.hidden = !_selected;
+        self.layer.borderColor = selectedColor;
     }
 }
 
